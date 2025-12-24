@@ -1,0 +1,36 @@
+# Simulation outputs
+sim_build/
+*.vcd
+*.fst
+*.ghw
+*.wlf
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+
+# Results
+results.xml
