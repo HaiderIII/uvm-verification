@@ -20,7 +20,7 @@ async def test_counter_reset(dut):
     """Test that reset sets counter to 0."""
 
     # Start clock (10ns period = 100MHz)
-    clock = Clock(dut.clk, 10, units="ns")
+    clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Initialize inputs
@@ -48,7 +48,7 @@ async def test_counter_count(dut):
     """Test that counter increments when enabled."""
 
     # Start clock
-    clock = Clock(dut.clk, 10, units="ns")
+    clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset sequence
@@ -63,7 +63,7 @@ async def test_counter_count(dut):
 
     # Count for 10 cycles
     await ClockCycles(dut.clk, 10)
-
+    await FallingEdge(dut.clk)       # Ensure we sample after the last increment
     # Check counter value
     expected = 10
     actual = int(dut.count.value)
@@ -77,7 +77,7 @@ async def test_counter_enable_control(dut):
     """Test that counter stops when enable is deasserted."""
 
     # Start clock
-    clock = Clock(dut.clk, 10, units="ns")
+    clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset sequence
@@ -93,6 +93,8 @@ async def test_counter_enable_control(dut):
 
     # Disable and wait
     dut.enable.value = 0
+    await FallingEdge(dut.clk)
+
     count_when_disabled = int(dut.count.value)
     await ClockCycles(dut.clk, 10)
 
@@ -109,7 +111,7 @@ async def test_counter_wrap(dut):
     """Test counter wrap-around at 255 (8-bit)."""
 
     # Start clock
-    clock = Clock(dut.clk, 10, units="ns")
+    clock = Clock(dut.clk, 10, unit="ns")
     cocotb.start_soon(clock.start())
 
     # Reset
@@ -118,10 +120,10 @@ async def test_counter_wrap(dut):
     await ClockCycles(dut.clk, 5)
     dut.rst_n.value = 1
     await ClockCycles(dut.clk, 2)
-
     # Count for 260 cycles (should wrap at 256)
     dut.enable.value = 1
     await ClockCycles(dut.clk, 260)
+    await FallingEdge(dut.clk)      # Ensure stable state after reset
 
     # Should have wrapped: 260 % 256 = 4
     expected = 260 % 256
