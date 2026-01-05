@@ -1,0 +1,21 @@
+# Makefile for APB pyuvm Testbench
+# ================================
+
+SIM ?= icarus
+TOPLEVEL_LANG ?= verilog
+
+# Source files
+VERILOG_SOURCES = $(PWD)/rtl/apb_slave.sv
+
+# Top level module
+TOPLEVEL = apb_slave
+
+# Python test module
+MODULE = tb_pyuvm.test_apb_simple
+
+# Include cocotb makefile
+include $(shell cocotb-config --makefiles)/Makefile.sim
+
+# Clean
+clean::
+	rm -rf sim_build results.xml __pycache__ tb_pyuvm/__pycache__ *.vcd
